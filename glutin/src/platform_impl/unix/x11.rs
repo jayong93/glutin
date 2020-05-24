@@ -384,15 +384,20 @@ impl Context {
                     // If the preferred choice works, don't spend time testing
                     // if the other works.
                     if prefer_egl {
+                        println!("Prefer EGL");
                         if let Some(_) = &*EGL {
+                            println!("Building EGL");
                             return egl(builder_egl_u);
                         } else if let Some(_) = &*GLX {
+                            println!("Building GLX");
                             return glx(builder_glx_u);
                         }
                     } else {
                         if let Some(_) = &*GLX {
+                            println!("Building GLX");
                             return glx(builder_glx_u);
                         } else if let Some(_) = &*EGL {
+                            println!("Building EGL");
                             return egl(builder_egl_u);
                         }
                     }
@@ -401,9 +406,16 @@ impl Context {
                         "both libGL and libEGL are not present".to_string(),
                     ));
                 } else {
+                    println!("NOT FORCE THINGY");
                     match (&*GLX, &*EGL, prefer_egl) {
-                        (Some(_), Some(_), true) => return egl(builder_egl_u),
-                        (Some(_), Some(_), false) => return glx(builder_glx_u),
+                        (Some(_), Some(_), true) => {
+                            println!("EGL thingy");
+                            return egl(builder_egl_u)
+                        },
+                        (Some(_), Some(_), false) => {
+                            println!("GLX thingy");
+                            return glx(builder_glx_u)
+                        },
                         _ => (),
                     }
 
@@ -475,7 +487,9 @@ impl Context {
         let mut builder_glx_u = None;
         let mut builder_egl_u = None;
 
+        println!("Initializing context");
         // start the context building process
+        let t1 = std::time::Instant::now();
         let context = Self::new_first_stage(
             &xconn,
             pf_reqs,
@@ -488,6 +502,8 @@ impl Context {
             fallback,
             Some(wb.window.transparent),
         )?;
+        let t2 = std::time::Instant::now();
+        println!("Chilled for {:?} in new_first_stage", t2 - t1);
 
         // getting the `visual_infos` (a struct that contains information about
         // the visual to use)
