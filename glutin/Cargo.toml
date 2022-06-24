@@ -24,7 +24,7 @@ wayland-csd-adwaita-notitle = ["winit/wayland-csd-adwaita-notitle"]
 
 [dependencies]
 lazy_static = "1.3"
-winit = { git = "https://github.com/rust-windowing/winit", default-features = false }
+winit = { git = "https://github.com/jayong93/winit", branch = "ime_fix", default-features = false }
 
 [target.'cfg(target_os = "android")'.dependencies]
 glutin_egl_sys = { version = "0.1.5", path = "../glutin_egl_sys" }
